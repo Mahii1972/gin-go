@@ -9,7 +9,7 @@ import (
 	"GIN/handlers"
 
 	"github.com/gin-gonic/gin"
-	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/joho/godotenv"
 )
 
@@ -18,13 +18,13 @@ func main() {
 		log.Fatal("Error loading .env file")
 	}
 
-	conn, err := pgx.Connect(context.Background(), os.Getenv("DATABASE_URL"))
+	pool, err := pgxpool.New(context.Background(), os.Getenv("DATABASE_URL"))
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer conn.Close(context.Background())
+	defer pool.Close()
 
-	queries := db.New(conn)
+	queries := db.New(pool)
 	handler := handlers.NewEmployeeHandler(queries)
 	r := gin.Default()
 

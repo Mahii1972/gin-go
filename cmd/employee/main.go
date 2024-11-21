@@ -14,8 +14,8 @@ import (
 )
 
 func main() {
-	if err := godotenv.Load(); err != nil {
-		log.Fatal("Error loading .env file")
+	if err := godotenv.Load("../../.env"); err != nil {
+		log.Println("Error loading .env file")
 	}
 
 	pool, err := pgxpool.New(context.Background(), os.Getenv("DATABASE_URL"))

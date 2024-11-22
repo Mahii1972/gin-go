@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    ports:
+      - "8080:8080"
+    env_file:
+      - .env
+    volumes:
+      - .:/app
+
+  migrate:
+    build: .
+    command: go run cmd/goose/main.go up
+    env_file:
+      - .env

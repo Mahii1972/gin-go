@@ -27,12 +27,16 @@ var (
 )
 
 func TestMain(m *testing.M) {
-	// Setup phase
-	if err := godotenv.Load(); err != nil {
-		panic(err)
+	// Load .env if it exists (local development)
+	godotenv.Load() // Remove the error check - it's ok if file doesn't exist
+
+	// Use either .env value or GitHub Actions secret
+	dbURL := os.Getenv("DATABASE_URL")
+	if dbURL == "" {
+		panic("DATABASE_URL is required")
 	}
 
-	conn, err := pgx.Connect(context.Background(), os.Getenv("DATABASE_URL"))
+	conn, err := pgx.Connect(context.Background(), dbURL)
 	if err != nil {
 		panic(err)
 	}
